@@ -1,7 +1,11 @@
+import Header from "./components/Header/Header";
+import LoginPage from "./pages/LoginPage";
+
 function App() {
   return (
     <>
-      <p className="text-red-500">My name is Riyazul Haque</p>
+      <Header />
+      <LoginPage />
     </>
   );
 }
