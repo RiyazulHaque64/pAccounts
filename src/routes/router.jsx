@@ -5,7 +5,7 @@ import LoginPage from "../pages/LoginPage";
 import RegistrationPage from "../pages/RegistrationPage";
 import PrivateRoute from "./PrivateRoute";
 import EmailVerification from "../pages/EmailVerification";
-import HomePage from "../pages/HomePage";
+import AccountsPage from "../pages/AccountsPage";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <HomePage />,
+        element: <AccountsPage />,
       },
     ],
   },

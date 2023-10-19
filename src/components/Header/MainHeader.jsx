@@ -5,7 +5,7 @@ import userAvatar from "../../assets/user-avatar.png";
 const MainHeader = () => {
   const { user } = useContext(AuthContext);
   return (
-    <div className="w-full h-20 shadow">
+    <div className="w-full h-20 shadow rounded-lg">
       <div className="w-11/12 h-20 mx-auto flex justify-between items-center">
         <div>
           <h2 className="text-xl">
