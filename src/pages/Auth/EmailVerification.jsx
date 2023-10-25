@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import verifyPageIllustration from "../assets/verificationIllustration.jpg";
+import verifyPageIllustration from "../../assets/verificationIllustration.jpg";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../provider/AuthProvider";
+import { AuthContext } from "../../provider/AuthProvider";
 
 const EmailVerification = () => {
   const { user } = useContext(AuthContext);

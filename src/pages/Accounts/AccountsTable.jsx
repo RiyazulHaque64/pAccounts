@@ -1,13 +1,40 @@
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { BiSolidEdit } from "react-icons/bi";
-import AddAccountForm from "../Form/AddAccountForm";
-import AccountRow from "../AccountRow/AccountRow";
+import AddAccountForm from "./AddAccountForm";
+import AccountRow from "./AccountRow";
 
 const AccountsTable = () => {
   return (
     <div>
-      <div className="mb-4">
-        <h2>Accounts Table summery</h2>
+      <div className="grid grid-cols-12 gap-3 mb-4">
+        <div className="col-span-3 flex justify-between bg-green-100 p-4 rounded">
+          <h4 className="text-green-600">Bank Balance</h4>
+          <span className="text-green-600">
+            120000
+            <span className="font-extrabold text-green-600">&#2547;</span>
+          </span>
+        </div>
+        <div className="col-span-3 flex justify-between bg-pink-50 p-4 rounded">
+          <h4 className="text-pink-600">Mobile Banking Balance</h4>
+          <span className="text-pink-600">
+            120000
+            <span className="font-extrabold text-pink-600">&#2547;</span>
+          </span>
+        </div>
+        <div className="col-span-3 flex justify-between bg-violet-100 p-4 rounded">
+          <h4 className="text-violet-600">Cash Balance</h4>
+          <span className="text-violet-600">
+            120000
+            <span className="font-extrabold text-violet-600">&#2547;</span>
+          </span>
+        </div>
+        <div className="col-span-3 flex justify-between bg-yellow-50 p-4 rounded">
+          <h4 className="text-yellow-600">Loan Balance</h4>
+          <span className="text-yellow-600">
+            120000
+            <span className="font-extrabold text-yellow-600">&#2547;</span>
+          </span>
+        </div>
       </div>
       <div>
         <div className="grid grid-cols-12 py-2 px-3 bg-violet-50 rounded">

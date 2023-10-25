@@ -25,24 +25,30 @@ const Sidebar = () => {
                   Summery
                 </span>
               </li>
-              <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
-                <HiArrowsRightLeft className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
-                <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
-                  Transactions
-                </span>
-              </li>
-              <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
-                <MdAccountBalance className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
-                <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
-                  Accounts
-                </span>
-              </li>
-              <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
-                <PiChartPieSlice className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
-                <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
-                  Sector
-                </span>
-              </li>
+              <Link to="/transactions">
+                <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
+                  <HiArrowsRightLeft className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
+                  <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
+                    Transactions
+                  </span>
+                </li>
+              </Link>
+              <Link to="/accounts">
+                <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
+                  <MdAccountBalance className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
+                  <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
+                    Accounts
+                  </span>
+                </li>
+              </Link>
+              <Link to="/sectors">
+                <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
+                  <PiChartPieSlice className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
+                  <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
+                    Sectors
+                  </span>
+                </li>
+              </Link>
             </ul>
           </nav>
         </div>

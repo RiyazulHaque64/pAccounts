@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import { TiTick } from "react-icons/ti";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
 
-const UpdateAccountForm = () => {
+const UpdateAccountForm = ({ cancelUpdateForm }) => {
   const [accountName, setAccountName] = useState("");
   const [accountType, setAccountType] = useState("");
-  const [initialBalance, setInitialBalance] = useState(0);
+  const [initialBalance, setInitialBalance] = useState("");
 
   const addAccountHandler = (e) => {
     e.preventDefault();
@@ -22,11 +22,7 @@ const UpdateAccountForm = () => {
   const resetFormHandler = () => {
     setAccountName("");
     setAccountType("");
-    setInitialBalance(0);
-  };
-
-  const cancelAddForm = () => {
-    resetFormHandler();
+    setInitialBalance("");
   };
 
   return (
@@ -70,24 +66,24 @@ const UpdateAccountForm = () => {
         <div className="col-span-2 px-2">
           <input
             className="w-full bg-white py-1 px-2 text-gray-700 rounded outline-none border border-violet-100 focus:border-violet-300"
-            type="text"
+            type="number"
             placeholder="Initial Balance"
             value={initialBalance}
-            onChange={(e) => setInitialBalance(Number(e.target.value))}
+            onChange={(e) => setInitialBalance(e.target.value)}
             required
           />
         </div>
         <div className="col-span-2 px-2 text-center flex items-center justify-center gap-3 py-1">
           <HiMiniXMark
             className="w-5 h-5 cursor-pointer duration-200 text-red-500 hover:text-red-700"
-            onClick={cancelAddForm}
+            onClick={cancelUpdateForm}
           />
           <IoMdRefresh
             className="w-5 h-5 cursor-pointer duration-200 text-yellow-600 hover:text-yellow-700"
             onClick={resetFormHandler}
           />
           <button type="submit">
-            <FiPlus className="w-5 h-5 cursor-pointer duration-200 text-violet-600 hover:text-violet-800" />
+            <TiTick className="w-5 h-5 cursor-pointer duration-200 text-green-600 hover:text-green-800" />
           </button>
         </div>
       </div>

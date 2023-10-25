@@ -17,12 +17,14 @@ import usePasswordFieldValidator from "../../hooks/Form/usePasswordFieldValidato
 import useConfirmPasswordFieldValidator from "../../hooks/Form/useConfirmPasswordFieldValidator";
 import googleIcon from "../../assets/google_icon.png";
 import { AuthContext } from "../../provider/AuthProvider";
+import { useAddUserMutation } from "../../redux/features/auth/authApi";
 
 const image_hosting_url = `https://api.imgbb.com/1/upload?key=${
   import.meta.env.VITE_imgbb_api_key
 }`;
 
 const RegistrationForm = () => {
+  const [addUser] = useAddUserMutation();
   const {
     createUser,
     setLoading,
@@ -81,6 +83,7 @@ const RegistrationForm = () => {
                             email: user.user.email,
                             photoURL: user.user.photoURL,
                           };
+                          addUser(userInfo);
                           emailVerify(user.user)
                             .then(() => {
                               navigate("/auth/verify", { replace: true });

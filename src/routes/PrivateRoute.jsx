@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
-import Loader from "../components/Loader/Loader";
 import { Navigate, useLocation } from "react-router-dom";
-import EmailVerification from "../pages/EmailVerification";
+import Loader from "../components/Loader/Loader";
+import EmailVerification from "../pages/Auth/EmailVerification";
 
 const PrivateRoute = ({ children }) => {
   const { user, existUser } = useContext(AuthContext);

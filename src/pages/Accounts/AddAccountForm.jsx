@@ -7,14 +7,14 @@ const AddAccountForm = () => {
   const [addForm, setAddForm] = useState(false);
   const [accountName, setAccountName] = useState("");
   const [accountType, setAccountType] = useState("");
-  const [initialBalance, setInitialBalance] = useState(0);
+  const [initialBalance, setInitialBalance] = useState("");
 
   const addAccountHandler = (e) => {
     e.preventDefault();
     const accountInfo = {
       accountName,
       accountType,
-      initialBalance,
+      initialBalance: parseFloat(initialBalance),
     };
     console.log(accountInfo);
     setAddForm(false);
@@ -24,7 +24,7 @@ const AddAccountForm = () => {
   const resetFormHandler = () => {
     setAccountName("");
     setAccountType("");
-    setInitialBalance(0);
+    setInitialBalance("");
   };
 
   const cancelAddForm = () => {
@@ -41,7 +41,7 @@ const AddAccountForm = () => {
               <input
                 className="w-full bg-white py-1 px-2 text-gray-700 rounded outline-none border border-violet-100 focus:border-violet-300"
                 type="text"
-                placeholder="Type your accounts name"
+                placeholder="Type your account name"
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
                 required
@@ -75,10 +75,10 @@ const AddAccountForm = () => {
             <div className="col-span-2 px-2">
               <input
                 className="w-full bg-white py-1 px-2 text-gray-700 rounded outline-none border border-violet-100 focus:border-violet-300"
-                type="text"
+                type="number"
                 placeholder="Initial Balance"
                 value={initialBalance}
-                onChange={(e) => setInitialBalance(Number(e.target.value))}
+                onChange={(e) => setInitialBalance(e.target.value)}
                 required
               />
             </div>

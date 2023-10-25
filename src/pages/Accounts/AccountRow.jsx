@@ -1,15 +1,19 @@
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { BiSolidEdit } from "react-icons/bi";
 import { useState } from "react";
-import UpdateAccountForm from "../Form/UpdateAccountForm";
+import UpdateAccountForm from "./UpdateAccountForm";
 
 const AccountRow = () => {
   const [updateAccount, setUpdateAccount] = useState(false);
 
+  const cancelUpdateForm = () => {
+    setUpdateAccount(false);
+  };
+
   return (
     <>
       {updateAccount ? (
-        <UpdateAccountForm />
+        <UpdateAccountForm cancelUpdateForm={cancelUpdateForm} />
       ) : (
         <div className="grid grid-cols-12 py-2 px-3 border-b border-violet-50">
           <div className="col-span-6 px-2">

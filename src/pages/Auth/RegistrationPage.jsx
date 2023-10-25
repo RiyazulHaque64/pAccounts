@@ -1,5 +1,5 @@
-import RegistrationForm from "../components/Form/RegistrationForm";
-import loginIllustration from "../assets/login_illustration.webp";
+import loginIllustration from "../../assets/login_illustration.webp";
+import RegistrationForm from "../../components/Form/RegistrationForm";
 
 const RegistrationPage = () => {
   return (
