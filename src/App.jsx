@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import MainHeader from "./components/Header/MainHeader";
 import Sidebar from "./components/Sidebar/Sidebar";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <MainHeader />
         <Outlet />
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
+import { TbLoader } from "react-icons/tb";
+import { AuthContext } from "../../provider/AuthProvider";
+import { useAddAccountMutation } from "../../redux/features/accounts/accountsApi";
+import toast from "react-hot-toast";
 
-const AddAccountForm = () => {
+const AddAccountForm = ({ justifyCenter }) => {
+  const { user } = useContext(AuthContext);
+  const [addAccount, { isLoading }] = useAddAccountMutation();
+
   const [addForm, setAddForm] = useState(false);
   const [accountName, setAccountName] = useState("");
   const [accountType, setAccountType] = useState("");
@@ -12,13 +19,18 @@ const AddAccountForm = () => {
   const addAccountHandler = (e) => {
     e.preventDefault();
     const accountInfo = {
+      user: user?.email,
       accountName,
       accountType,
-      initialBalance: parseFloat(initialBalance),
+      balance: parseFloat(initialBalance),
     };
-    console.log(accountInfo);
-    setAddForm(false);
-    resetFormHandler();
+    addAccount(accountInfo).then((data) => {
+      if (data.data.insertedId) {
+        toast.success("Successfully added an account!");
+        setAddForm(false);
+        resetFormHandler();
+      }
+    });
   };
 
   const resetFormHandler = () => {
@@ -61,14 +73,11 @@ const AddAccountForm = () => {
                 <option className="text-gray-700" value="bank">
                   Bank
                 </option>
-                <option className="text-gray-700" value="mobile bank">
+                <option className="text-gray-700" value="mobile-bank">
                   Mobile Bank
                 </option>
                 <option className="text-gray-700" value="cash">
                   Cash
-                </option>
-                <option className="text-gray-700" value="loan">
-                  Loan
                 </option>
               </select>
             </div>
@@ -91,14 +100,26 @@ const AddAccountForm = () => {
                 className="w-5 h-5 cursor-pointer duration-200 text-yellow-600 hover:text-yellow-700"
                 onClick={resetFormHandler}
               />
-              <button type="submit">
-                <FiPlus className="w-5 h-5 cursor-pointer duration-200 text-violet-600 hover:text-violet-800" />
+              <button
+                className="disabled:cursor-not-allowed"
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <TbLoader className="w-5 h-5 cursor-pointer duration-200 text-violet-600 hover:text-violet-800 animate-spin" />
+                ) : (
+                  <FiPlus className="w-5 h-5 cursor-pointer duration-200 text-violet-600 hover:text-violet-800" />
+                )}
               </button>
             </div>
           </div>
         </form>
       ) : (
-        <div className="flex justify-end mt-6">
+        <div
+          className={`flex ${
+            justifyCenter ? "justify-center" : "justify-end"
+          } mt-6`}
+        >
           <button
             className={`bg-violet-100 text-violet-600 font-semibold px-4 py-2 uppercase text-sm rounded duration-200 hover:bg-violet-200 hover:text-violet-700`}
             onClick={() => setAddForm(true)}

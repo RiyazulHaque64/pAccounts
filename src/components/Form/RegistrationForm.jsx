@@ -88,7 +88,6 @@ const RegistrationForm = () => {
                             .then(() => {
                               navigate("/auth/verify", { replace: true });
                               // console.log("Verified User", user.user);
-                              console.log(userInfo);
                             })
                             .catch((error) => console.log(error.message));
                         })

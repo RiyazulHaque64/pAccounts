@@ -1,26 +1,37 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
+import { TbLoader } from "react-icons/tb";
+import { useAddSectorMutation } from "../../redux/features/sectors/sectorsApi";
+import toast from "react-hot-toast";
+import { AuthContext } from "../../provider/AuthProvider";
 
-const AddSectorForm = () => {
+const AddSectorForm = ({ justifyCenter, parentSectors }) => {
+  const { user } = useContext(AuthContext);
+  const [createSector, { isLoading }] = useAddSectorMutation();
   const [addSector, setAddSector] = useState(false);
   const [sectorName, setSectorName] = useState("");
   const [sectorType, setSectorType] = useState("");
   const [parentSector, setParentSector] = useState("");
 
-  const addAccountHandler = (e) => {
+  const addSectorHandler = (e) => {
     e.preventDefault();
     const sectorPosition = parentSector === "" ? "parent" : parentSector;
-    const accountInfo = {
+    const sectorInfo = {
+      user: user?.email,
       sectorName,
       sectorType,
       parent: sectorPosition,
       transaction: 0,
     };
-    console.log(accountInfo);
-    setAddSector(false);
-    resetFormHandler();
+    createSector(sectorInfo).then((data) => {
+      if (data.data.insertedId) {
+        toast.success("Successfully added a sector!");
+        setAddSector(false);
+        resetFormHandler();
+      }
+    });
   };
 
   const resetFormHandler = () => {
@@ -37,7 +48,7 @@ const AddSectorForm = () => {
   return (
     <>
       {addSector ? (
-        <form onSubmit={addAccountHandler}>
+        <form onSubmit={addSectorHandler}>
           <div className="grid grid-cols-12 py-2 px-3 bg-violet-50 rounded mt-6">
             <div className="col-span-6 px-2">
               <input
@@ -56,24 +67,18 @@ const AddSectorForm = () => {
                 value={parentSector}
                 onChange={(e) => setParentSector(e.target.value)}
               >
-                <option className="text-gray-700" value="">
-                  Select Parent Sector
+                <option className="text-gray-600" value="">
+                  Parent Sector
                 </option>
-                <option className="text-gray-700" value="education">
-                  Education
-                </option>
-                <option className="text-gray-700" value="food">
-                  Food
-                </option>
-                <option className="text-gray-700" value="cosmetics">
-                  Cosmetics
-                </option>
-                <option className="text-gray-700" value="family">
-                  Family
-                </option>
-                <option className="text-gray-700" value="wastage">
-                  Wastage
-                </option>
+                {parentSectors.map((parentSector) => (
+                  <option
+                    key={parentSector._id}
+                    value={parentSector.sectorName}
+                    className="text-gray-600"
+                  >
+                    {parentSector.sectorName}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="col-span-2 px-2">
@@ -93,18 +98,6 @@ const AddSectorForm = () => {
                 <option className="text-gray-700" value="expense">
                   Expense
                 </option>
-                <option className="text-gray-700" value="taken deposit">
-                  Taken Deposit
-                </option>
-                <option className="text-gray-700" value="given deposit">
-                  Given Deposit
-                </option>
-                <option className="text-gray-700" value="given loan">
-                  Given Loan
-                </option>
-                <option className="text-gray-700" value="taken loan">
-                  Taken Loan
-                </option>
               </select>
             </div>
             <div className="col-span-2 px-2 text-center flex items-center justify-center gap-3 py-1">
@@ -123,12 +116,17 @@ const AddSectorForm = () => {
           </div>
         </form>
       ) : (
-        <div className="flex justify-end mt-6">
+        <div
+          className={`flex ${
+            justifyCenter ? "justify-center" : "justify-end"
+          } mt-6`}
+        >
           <button
             className={`bg-violet-100 text-violet-600 font-semibold px-4 py-2 uppercase text-sm rounded duration-200 hover:bg-violet-200 hover:text-violet-700`}
+            disabled={isLoading}
             onClick={() => setAddSector(true)}
           >
-            Add Sector
+            {isLoading ? <TbLoader /> : "Add Sector"}
           </button>
         </div>
       )}

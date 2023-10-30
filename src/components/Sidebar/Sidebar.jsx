@@ -19,12 +19,14 @@ const Sidebar = () => {
         <div className="flex-1">
           <nav className="py-6">
             <ul className="space-y-3">
-              <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
-                <PiNotepadBold className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
-                <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
-                  Summery
-                </span>
-              </li>
+              <Link to="/summery">
+                <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
+                  <PiNotepadBold className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />
+                  <span className="text-lg text-gray-100 duration-200 group-hover:text-violet-600">
+                    Summery
+                  </span>
+                </li>
+              </Link>
               <Link to="/transactions">
                 <li className="flex items-center gap-2 py-2 px-6 rounded duration-200 hover:bg-white group cursor-pointer">
                   <HiArrowsRightLeft className="w-6 h-6 text-gray-100 duration-200 group-hover:text-violet-600" />

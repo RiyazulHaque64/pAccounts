@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TiTick } from "react-icons/ti";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
+import {
+  useGetParentSectorsQuery,
+  useUpdateSectorMutation,
+} from "../../redux/features/sectors/sectorsApi";
+import { AuthContext } from "../../provider/AuthProvider";
+import toast from "react-hot-toast";
 
-const UpdateSectorForm = ({ cancelUpdateForm }) => {
-  const [sectorName, setSectorName] = useState("");
-  const [sectorType, setSectorType] = useState("");
-  const [parentSector, setParentSector] = useState("");
+const UpdateSectorForm = ({ cancelUpdateForm, sector }) => {
+  const { user } = useContext(AuthContext);
+  const { data: parentSectors } = useGetParentSectorsQuery(user?.email);
+  const [updateSector] = useUpdateSectorMutation();
+
+  const { _id, sectorName: name, sectorType: type, parent } = sector;
+  const [sectorName, setSectorName] = useState(name);
+  const [sectorType, setSectorType] = useState(type);
+  const [parentSector, setParentSector] = useState(parent);
 
   const addAccountHandler = (e) => {
     e.preventDefault();
@@ -15,16 +26,20 @@ const UpdateSectorForm = ({ cancelUpdateForm }) => {
       sectorName,
       sectorType,
       parent: sectorPosition,
-      transaction: 0,
     };
-    console.log(sectorInfo);
-    resetFormHandler();
+    updateSector({ id: _id, updatedInfo: sectorInfo }).then((data) => {
+      if (data.data.modifiedCount > 0) {
+        toast.success("Successfully updated the sector!");
+        cancelUpdateForm();
+        resetFormHandler();
+      }
+    });
   };
 
   const resetFormHandler = () => {
-    setSectorName("");
-    setSectorType("");
-    setParentSector("");
+    setSectorName(name);
+    setSectorType(type);
+    setParentSector(parent);
   };
 
   return (
@@ -48,23 +63,17 @@ const UpdateSectorForm = ({ cancelUpdateForm }) => {
             onChange={(e) => setParentSector(e.target.value)}
           >
             <option className="text-gray-700" value="">
-              Select Parent Sector
+              Parent
             </option>
-            <option className="text-gray-700" value="education">
-              Education
-            </option>
-            <option className="text-gray-700" value="food">
-              Food
-            </option>
-            <option className="text-gray-700" value="cosmetics">
-              Cosmetics
-            </option>
-            <option className="text-gray-700" value="family">
-              Family
-            </option>
-            <option className="text-gray-700" value="wastage">
-              Wastage
-            </option>
+            {parentSectors?.map((parentSector) => (
+              <option
+                key={parentSector._id}
+                value={parentSector.sectorName}
+                className="text-gray-700"
+              >
+                {parentSector.sectorName}
+              </option>
+            ))}
           </select>
         </div>
         <div className="col-span-2 px-2">
@@ -83,18 +92,6 @@ const UpdateSectorForm = ({ cancelUpdateForm }) => {
             </option>
             <option className="text-gray-700" value="expense">
               Expense
-            </option>
-            <option className="text-gray-700" value="taken deposit">
-              Taken Deposit
-            </option>
-            <option className="text-gray-700" value="given deposit">
-              Given Deposit
-            </option>
-            <option className="text-gray-700" value="given loan">
-              Given Loan
-            </option>
-            <option className="text-gray-700" value="taken loan">
-              Taken Loan
             </option>
           </select>
         </div>

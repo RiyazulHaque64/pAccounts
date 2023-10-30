@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import verifyPageIllustration from "../../assets/verificationIllustration.jpg";
+import verifyPageIllustration from "../assets/verificationIllustration.jpg";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../provider/AuthProvider";
+import { AuthContext } from "../provider/AuthProvider";
 
 const EmailVerification = () => {
   const { user } = useContext(AuthContext);
   const [refreshPage, setRefreshPage] = useState(false);
   const navigate = useNavigate();
+  console.log("Verified", refreshPage);
+  console.log("emailVerified", user?.emailVerified);
 
   useEffect(() => {
     if (user?.emailVerified === false) {

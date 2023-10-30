@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <ReactPracticeCalendar />,
       },
+      // {
+      //   path: "/summery",
+      //   element: <ConfirmationPage />,
+      // },
       {
         path: "/transactions",
         element: <TransactionsPage />,

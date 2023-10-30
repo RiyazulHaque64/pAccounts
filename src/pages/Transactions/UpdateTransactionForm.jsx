@@ -1,35 +1,103 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TiTick } from "react-icons/ti";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
 import ReactDatePicker from "react-datepicker";
+import { useGetSectorsQuery } from "../../redux/features/sectors/sectorsApi";
+import { AuthContext } from "../../provider/AuthProvider";
+import { useGetAccountsQuery } from "../../redux/features/accounts/accountsApi";
 
-const UpdateTransactionForm = ({ cancelUpdateForm }) => {
-  const [transactionDate, setTransactionDate] = useState(new Date());
-  const [transactionName, setTransactionName] = useState("");
-  const [transactionSector, setTransactionSector] = useState("");
-  const [account, setAccount] = useState("");
-  const [amount, setAmount] = useState("");
+const UpdateTransactionForm = ({ transaction, cancelUpdateForm }) => {
+  const { user } = useContext(AuthContext);
+  const {
+    date: dateStr,
+    transactionName: name,
+    transactionSector: sector,
+    account: acc,
+    amount: initialAmount,
+  } = transaction;
+  const { data: sectors } = useGetSectorsQuery(user?.email);
+  const { data: accounts } = useGetAccountsQuery(user?.email);
+  console.log(accounts);
 
-  const addAccountHandler = (e) => {
+  const [transactionDate, setTransactionDate] = useState(new Date(dateStr));
+  const [transactionName, setTransactionName] = useState(name);
+  const [transactionSector, setTransactionSector] = useState(sector);
+  const [account, setAccount] = useState(acc);
+  const [amount, setAmount] = useState(initialAmount);
+
+  const updateTransactionHandler = (e) => {
     e.preventDefault();
-    const sectorInfo = {
+    const updatedTransaction = {
+      date: transactionDate,
       transactionName,
       transactionSector,
-      transaction: 0,
+      account,
+      amount: parseFloat(amount),
     };
-    console.log(sectorInfo);
+    if (
+      sector === transactionSector &&
+      acc === account &&
+      initialAmount === amount
+    ) {
+      // sector api call kora lagebena
+      // account api call kora lagbena
+    }
+    if (
+      sector === transactionSector &&
+      acc === account &&
+      initialAmount !== amount
+    ) {
+      // sector ber korte hobe & ager amount minus kore notun amoun add korte hobe
+      // account ber korte hobe & sector type er upor depend kore ager amount minus kore notun notun amount add korte hobe or ager amount add kore notun amount minus korte hobe
+    }
+    if (
+      sector !== transactionSector &&
+      acc === account &&
+      initialAmount === amount
+    ) {
+      // ager sector ber korte hobe & amount minus korte hobe
+      // notun sector ber kore sekhane amount add korte hobe
+    }
+    if (
+      sector === transactionSector &&
+      acc !== account &&
+      initialAmount !== amount
+    ) {
+      // sector ber korte hobe & ager amount minus kore notun amount add korte hobe
+      // sector type er upor depend kore ager account calculation korte hobe
+      // sector type er upor depend kore notun account calculation korte hobe
+    }
+    if (
+      sector === transactionSector &&
+      acc !== account &&
+      initialAmount === amount
+    ) {
+      // sector ber korte hobe then sector type er upor depend kore old account calculation korte hobe & new account calculation korte hobe
+    }
+    if (
+      sector !== transactionSector &&
+      acc !== account &&
+      initialAmount === amount
+    ) {
+      // old sector ber kore sekhane amount minus korte hobe
+      // old sector type er upor depand kore old account calculation korte hobe
+      // new sector e amount add korte hobe
+      // new sector er upor depand kore new account e amount calculation korte hobe
+    }
     resetFormHandler();
   };
 
   const resetFormHandler = () => {
-    setTransactionDate(new Date());
-    setTransactionName("");
-    transactionSector("");
+    setTransactionDate(new Date(dateStr));
+    setTransactionName(name);
+    setTransactionSector(sector);
+    setAccount(acc);
+    setAmount(initialAmount);
   };
 
   return (
-    <form onSubmit={addAccountHandler}>
+    <form onSubmit={updateTransactionHandler}>
       <div className="grid grid-cols-12 py-2 px-3 bg-violet-50 rounded">
         <div className="col-span-2">
           <ReactDatePicker
@@ -62,18 +130,15 @@ const UpdateTransactionForm = ({ cancelUpdateForm }) => {
             <option className="text-gray-700" value="">
               Select Sector
             </option>
-            <option className="text-gray-700" value="income">
-              Food
-            </option>
-            <option className="text-gray-700" value="expense">
-              Education
-            </option>
-            <option className="text-gray-700" value="taken deposit">
-              Snacks
-            </option>
-            <option className="text-gray-700" value="given deposit">
-              Wastage
-            </option>
+            {sectors?.map((sector) => (
+              <option
+                className="text-gray-700"
+                key={sector._id}
+                value={sector.sectorName}
+              >
+                {sector.sectorName}
+              </option>
+            ))}
           </select>
         </div>
         <div className="col-span-2">
@@ -86,18 +151,15 @@ const UpdateTransactionForm = ({ cancelUpdateForm }) => {
             <option className="text-gray-700" value="">
               Select Account
             </option>
-            <option className="text-gray-700" value="islami bank">
-              Islami Bank
-            </option>
-            <option className="text-gray-700" value="bkash">
-              bKash
-            </option>
-            <option className="text-gray-700" value="nogod">
-              Nogod
-            </option>
-            <option className="text-gray-700" value="cash">
-              Cash
-            </option>
+            {accounts?.map((acc) => (
+              <option
+                className="text-gray-700 capitalize"
+                key={acc._id}
+                value={acc.accountName}
+              >
+                {acc.accountName}
+              </option>
+            ))}
           </select>
         </div>
         <div className="col-span-1">

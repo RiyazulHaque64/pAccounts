@@ -32,8 +32,7 @@ const LoginForm = () => {
     if (validEmail) {
       if (validPassword) {
         loginUser(validEmail, validPassword)
-          .then((user) => {
-            console.log(user);
+          .then(() => {
             setError("");
             setLoading(null);
             navigate("/", { replace: true });
@@ -59,8 +58,7 @@ const LoginForm = () => {
 
   const loginWithGoogle = () => {
     signInWithGoogle()
-      .then((result) => {
-        console.log(result);
+      .then(() => {
         setError("");
         setLoading(null);
       })
