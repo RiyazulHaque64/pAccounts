@@ -28,7 +28,7 @@ const TransactionDeleteConfirmation = ({ cancelConfirmation, transaction }) => {
   const [updateSector] = useUpdateSectorMutation();
   const [updateAccount] = useUpdateAccountMutation();
 
-  const deleteAccountHandler = (id) => {
+  const deleteTransactionHandler = (id) => {
     deleteTransaction(id).then((data) => {
       if (data.data.deletedCount > 0) {
         const updatedSector = { transaction: sector?.transaction - amount };
@@ -60,7 +60,7 @@ const TransactionDeleteConfirmation = ({ cancelConfirmation, transaction }) => {
         <div className="mt-4 flex gap-2">
           <button
             className={`text-white font-semibold px-4 py-1 rounded duration-200 bg-violet-500 hover:bg-violet-600 disabled:cursor-not-allowed`}
-            onClick={() => deleteAccountHandler(_id)}
+            onClick={() => deleteTransactionHandler(_id)}
             disabled={isLoading}
           >
             {isLoading ? (

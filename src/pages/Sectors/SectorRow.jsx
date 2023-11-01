@@ -5,9 +5,9 @@ import UpdateSectorForm from "./UpdateSectorForm";
 import ConfirmationPage from "../ConfirmationPage/ConfirmationPage";
 import { useDeleteSectorMutation } from "../../redux/features/sectors/sectorsApi";
 
-const SectorRow = ({ sector }) => {
+const SectorRow = ({ sector, sectors }) => {
   const deleteSector = useDeleteSectorMutation();
-  const { _id, sectorName, sectorType, parent, transaction } = sector;
+  const { _id, sectorName, sectorType, parent } = sector;
   const [updateSector, setUpdateSector] = useState(false);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
 
@@ -18,6 +18,22 @@ const SectorRow = ({ sector }) => {
   const cancelConfirmation = () => {
     setShowConfirmBox(false);
   };
+
+  const parentSectorTransactionCalculator = (currentSector) => {
+    if (currentSector.parent === "parent") {
+      const childSectorsTransaction = sectors
+        ?.filter((sec) => sec.parent === currentSector.sectorName)
+        ?.reduce(
+          (prevValue, currentValue) => prevValue + currentValue.transaction,
+          0
+        );
+
+      return currentSector.transaction + childSectorsTransaction;
+    } else {
+      return currentSector.transaction;
+    }
+  };
+
   return (
     <>
       {updateSector ? (
@@ -45,7 +61,7 @@ const SectorRow = ({ sector }) => {
           </div>
           <div className="col-span-2 px-2 text-right">
             <span className="text-gray-700">
-              {transaction}
+              {parentSectorTransactionCalculator(sector)}
               <span className="font-extrabold text-gray-700">&#2547;</span>
             </span>
           </div>

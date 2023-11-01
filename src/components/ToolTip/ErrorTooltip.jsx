@@ -2,7 +2,7 @@ const ErrorTooltip = ({ error }) => {
   return (
     <div
       className={`absolute duration-200 transition-opacity ${
-        error.length > 22 ? "w-52" : "w-40"
+        error.length > 32 ? "w-64" : error.length > 22 ? "w-52" : "w-40"
       } -top-10`}
     >
       <div className="relative">

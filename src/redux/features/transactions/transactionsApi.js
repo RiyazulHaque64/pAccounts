@@ -22,6 +22,7 @@ const transactionsApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: updatedTransaction,
       }),
+      invalidatesTags: ["accounts", "sectors", "transactions"],
     }),
     deleteTransaction: builder.mutation({
       query: (id) => ({

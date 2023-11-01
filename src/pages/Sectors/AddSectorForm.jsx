@@ -122,7 +122,7 @@ const AddSectorForm = ({ justifyCenter, parentSectors }) => {
           } mt-6`}
         >
           <button
-            className={`bg-violet-100 text-violet-600 font-semibold px-4 py-2 uppercase text-sm rounded duration-200 hover:bg-violet-200 hover:text-violet-700`}
+            className={`bg-violet-100 text-violet-600 font-semibold px-4 py-2 uppercase text-sm rounded duration-200 hover:bg-violet-200 hover:text-violet-700 disabled:cursor-not-allowed`}
             disabled={isLoading}
             onClick={() => setAddSector(true)}
           >

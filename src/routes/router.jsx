@@ -8,7 +8,9 @@ import AccountsPage from "../pages/Accounts/AccountsPage";
 import SectorPage from "../pages/Sectors/SectorPage";
 import TransactionsPage from "../pages/Transactions/TransactionsPage";
 import EmailVerification from "../pages/Auth/EmailVerification";
+import BorrowerPage from "../pages/Loan/Borrower/BorrowerPage";
 import ReactPracticeCalendar from "../components/ReactPracticeCalendar";
+import LoanTransactionPage from "../pages/Loan/LoanTransaction/LoanTransactionPage";
 
 const router = createBrowserRouter([
   {
@@ -23,10 +25,6 @@ const router = createBrowserRouter([
         path: "/",
         element: <ReactPracticeCalendar />,
       },
-      // {
-      //   path: "/summery",
-      //   element: <ConfirmationPage />,
-      // },
       {
         path: "/transactions",
         element: <TransactionsPage />,
@@ -38,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: "/sectors",
         element: <SectorPage />,
+      },
+      {
+        path: "/borrowers",
+        element: <BorrowerPage />,
+      },
+      {
+        path: "/loan-transactions",
+        element: <LoanTransactionPage />,
       },
     ],
   },

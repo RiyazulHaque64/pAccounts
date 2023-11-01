@@ -60,14 +60,14 @@ const SectorsTable = () => {
               </div>
             </div>
             {sectors.map((sector) => (
-              <SectorRow key={sector._id} sector={sector} />
+              <SectorRow key={sector._id} sector={sector} sectors={sectors} />
             ))}
             <AddSectorForm parentSectors={parentSectors} />
           </div>
         </div>
       ) : (
         <div className="text-center">
-          <p>No sectors found! Please,</p>
+          <p>No sectors found!</p>
           <AddSectorForm justifyCenter={true} parentSectors={[]} />
         </div>
       )}

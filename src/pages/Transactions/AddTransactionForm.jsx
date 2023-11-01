@@ -47,21 +47,21 @@ const AddTransactionForm = ({ accounts, justifyCenter }) => {
         };
         updateSector({ id: sector._id, updatedInfo: updatedSector });
         if (sector?.sectorType === "income") {
-          const updatedAccount = {
+          const updatedBalance = {
             balance: selectedAccount?.balance + parseFloat(amount),
           };
           updateAccount({
             accountId: selectedAccount?._id,
-            data: updatedAccount,
+            data: updatedBalance,
           });
         }
         if (sector?.sectorType === "expense") {
-          const updatedAccount = {
+          const updatedBalance = {
             balance: selectedAccount?.balance - parseFloat(amount),
           };
           updateAccount({
             accountId: selectedAccount?._id,
-            data: updatedAccount,
+            data: updatedBalance,
           });
         }
       }

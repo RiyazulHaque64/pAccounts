@@ -3,13 +3,22 @@ import { TiTick } from "react-icons/ti";
 import { IoMdRefresh } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
 import ReactDatePicker from "react-datepicker";
-import { useGetSectorsQuery } from "../../redux/features/sectors/sectorsApi";
+import {
+  useGetSectorsQuery,
+  useUpdateSectorMutation,
+} from "../../redux/features/sectors/sectorsApi";
 import { AuthContext } from "../../provider/AuthProvider";
-import { useGetAccountsQuery } from "../../redux/features/accounts/accountsApi";
+import {
+  useGetAccountsQuery,
+  useUpdateAccountMutation,
+} from "../../redux/features/accounts/accountsApi";
+import { useUpdateTransactionMutation } from "../../redux/features/transactions/transactionsApi";
+import toast from "react-hot-toast";
 
 const UpdateTransactionForm = ({ transaction, cancelUpdateForm }) => {
   const { user } = useContext(AuthContext);
   const {
+    _id: transactionId,
     date: dateStr,
     transactionName: name,
     transactionSector: sector,
@@ -18,13 +27,42 @@ const UpdateTransactionForm = ({ transaction, cancelUpdateForm }) => {
   } = transaction;
   const { data: sectors } = useGetSectorsQuery(user?.email);
   const { data: accounts } = useGetAccountsQuery(user?.email);
-  console.log(accounts);
+  const [updateTransaction, { isLoading }] = useUpdateTransactionMutation();
+  const [updateSector] = useUpdateSectorMutation();
+  const [updateAccount] = useUpdateAccountMutation();
 
   const [transactionDate, setTransactionDate] = useState(new Date(dateStr));
   const [transactionName, setTransactionName] = useState(name);
   const [transactionSector, setTransactionSector] = useState(sector);
   const [account, setAccount] = useState(acc);
   const [amount, setAmount] = useState(initialAmount);
+
+  const {
+    _id: prevSectorId,
+    sectorType: prevSectorType,
+    transaction: prevSectorTransaction,
+  } = sectors?.find((sec) => sec.sectorName === sector) || {};
+  const { _id: prevAccountId, balance: prevBalance } =
+    accounts.find((prevAcc) => prevAcc.accountName === acc) || {};
+  const {
+    _id: selectedSectorId,
+    sectorType: selectedSectorType,
+    transaction: selectedSectorTransaction,
+  } = sectors?.find((sec) => sec.sectorName === transactionSector) || {};
+  const { _id: selectedAccountId, balance: selectedAccountBalance } =
+    accounts.find((selectedAcc) => selectedAcc.accountName === account) || {};
+
+  const updateTransactionFunc = (id, updatedData) => {
+    updateTransaction({
+      id: id,
+      updatedTransaction: updatedData,
+    }).then((data) => {
+      if (data.data.modifiedCount > 0) {
+        toast.success("Successfully updated the transaction!");
+        cancelUpdateForm();
+      }
+    });
+  };
 
   const updateTransactionHandler = (e) => {
     e.preventDefault();
@@ -35,57 +73,259 @@ const UpdateTransactionForm = ({ transaction, cancelUpdateForm }) => {
       account,
       amount: parseFloat(amount),
     };
+
     if (
       sector === transactionSector &&
       acc === account &&
-      initialAmount === amount
+      initialAmount === parseFloat(amount)
     ) {
-      // sector api call kora lagebena
-      // account api call kora lagbena
+      updateTransaction({
+        id: transactionId,
+        updatedTransaction: updatedTransaction,
+      }).then((data) => {
+        console.log(data.data);
+        if (data.data.modifiedCount > 0) {
+          toast.success("Successfully updated the transaction!");
+          cancelUpdateForm();
+        } else {
+          toast.error("Nothing has been updated!");
+          cancelUpdateForm();
+        }
+      });
     }
     if (
       sector === transactionSector &&
       acc === account &&
-      initialAmount !== amount
+      initialAmount !== parseFloat(amount)
     ) {
-      // sector ber korte hobe & ager amount minus kore notun amoun add korte hobe
-      // account ber korte hobe & sector type er upor depend kore ager amount minus kore notun notun amount add korte hobe or ager amount add kore notun amount minus korte hobe
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: {
+          transaction:
+            prevSectorTransaction - initialAmount + parseFloat(amount),
+        },
+      });
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - initialAmount + parseFloat(amount) },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + initialAmount - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
     }
     if (
       sector !== transactionSector &&
       acc === account &&
-      initialAmount === amount
+      initialAmount === parseFloat(amount)
     ) {
-      // ager sector ber korte hobe & amount minus korte hobe
-      // notun sector ber kore sekhane amount add korte hobe
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: { transaction: prevSectorTransaction - initialAmount },
+      });
+      updateSector({
+        id: selectedSectorId,
+        updatedInfo: {
+          transaction: selectedSectorTransaction + parseFloat(amount),
+        },
+      });
+      updateTransactionFunc(transactionId, updatedTransaction);
     }
     if (
       sector === transactionSector &&
       acc !== account &&
-      initialAmount !== amount
+      initialAmount !== parseFloat(amount)
     ) {
-      // sector ber korte hobe & ager amount minus kore notun amount add korte hobe
-      // sector type er upor depend kore ager account calculation korte hobe
-      // sector type er upor depend kore notun account calculation korte hobe
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: {
+          transaction:
+            prevSectorTransaction - initialAmount + parseFloat(amount),
+        },
+      });
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - initialAmount },
+        });
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance + parseFloat(amount) },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + initialAmount },
+        });
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
     }
     if (
       sector === transactionSector &&
       acc !== account &&
-      initialAmount === amount
+      initialAmount === parseFloat(amount)
     ) {
-      // sector ber korte hobe then sector type er upor depend kore old account calculation korte hobe & new account calculation korte hobe
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - parseFloat(amount) },
+        });
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance + parseFloat(amount) },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + parseFloat(amount) },
+        });
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
     }
     if (
       sector !== transactionSector &&
       acc !== account &&
-      initialAmount === amount
+      initialAmount === parseFloat(amount)
     ) {
-      // old sector ber kore sekhane amount minus korte hobe
-      // old sector type er upor depand kore old account calculation korte hobe
-      // new sector e amount add korte hobe
-      // new sector er upor depand kore new account e amount calculation korte hobe
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: {
+          transaction: prevSectorTransaction - parseFloat(amount),
+        },
+      });
+      updateSector({
+        id: selectedSectorId,
+        updatedInfo: {
+          transaction: selectedSectorTransaction + parseFloat(amount),
+        },
+      });
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - parseFloat(amount) },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + parseFloat(amount) },
+        });
+      }
+      if (selectedSectorType === "income") {
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance + parseFloat(amount) },
+        });
+      }
+      if (selectedSectorType === "expense") {
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
     }
-    resetFormHandler();
+    if (
+      sector !== transactionSector &&
+      acc !== account &&
+      initialAmount !== parseFloat(amount)
+    ) {
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: {
+          transaction: prevSectorTransaction - initialAmount,
+        },
+      });
+      updateSector({
+        id: selectedSectorId,
+        updatedInfo: {
+          transaction: selectedSectorTransaction + parseFloat(amount),
+        },
+      });
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - initialAmount },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + initialAmount },
+        });
+      }
+      if (selectedSectorType === "income") {
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance + parseFloat(amount) },
+        });
+      }
+      if (selectedSectorType === "expense") {
+        updateAccount({
+          accountId: selectedAccountId,
+          data: { balance: selectedAccountBalance - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
+    }
+    if (
+      sector !== transactionSector &&
+      acc === account &&
+      initialAmount !== parseFloat(amount)
+    ) {
+      updateSector({
+        id: prevSectorId,
+        updatedInfo: {
+          transaction: prevSectorTransaction - initialAmount,
+        },
+      });
+      updateSector({
+        id: selectedSectorId,
+        updatedInfo: {
+          transaction: selectedSectorTransaction + parseFloat(amount),
+        },
+      });
+      if (prevSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - initialAmount },
+        });
+      }
+      if (prevSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + initialAmount },
+        });
+      }
+      if (selectedSectorType === "income") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance + parseFloat(amount) },
+        });
+      }
+      if (selectedSectorType === "expense") {
+        updateAccount({
+          accountId: prevAccountId,
+          data: { balance: prevBalance - parseFloat(amount) },
+        });
+      }
+      updateTransactionFunc(transactionId, updatedTransaction);
+    }
   };
 
   const resetFormHandler = () => {
@@ -181,7 +421,7 @@ const UpdateTransactionForm = ({ transaction, cancelUpdateForm }) => {
             className="w-5 h-5 cursor-pointer duration-200 text-yellow-600 hover:text-yellow-700"
             onClick={resetFormHandler}
           />
-          <button type="submit">
+          <button type="submit" disabled={isLoading}>
             <TiTick className="w-5 h-5 cursor-pointer duration-200 text-green-600 hover:text-green-800" />
           </button>
         </div>

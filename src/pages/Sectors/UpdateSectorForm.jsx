@@ -19,7 +19,7 @@ const UpdateSectorForm = ({ cancelUpdateForm, sector }) => {
   const [sectorType, setSectorType] = useState(type);
   const [parentSector, setParentSector] = useState(parent);
 
-  const addAccountHandler = (e) => {
+  const updateSectorHandler = (e) => {
     e.preventDefault();
     const sectorPosition = parentSector === "" ? "parent" : parentSector;
     const sectorInfo = {
@@ -43,7 +43,7 @@ const UpdateSectorForm = ({ cancelUpdateForm, sector }) => {
   };
 
   return (
-    <form onSubmit={addAccountHandler}>
+    <form onSubmit={updateSectorHandler}>
       <div className="grid grid-cols-12 py-2 px-3 bg-violet-50 rounded">
         <div className="col-span-6 px-2">
           <input
